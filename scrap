@@ -1,0 +1,10 @@
+translate :: Int -> (Int, Double)
+translate i = (,) i $ sin $ (fromIntegral i) * pi / 180
+
+inputArray = array (1,96) $ map translate [1..96]
+
+dftArray :: CArray Int (Complex Double)
+dftArray = dftRC inputArray
+
+use   a = (`mapM` a) $ putStrLn . show . realPart . abs
+use2  a = putStrLn $ show $ bounds dftArray
