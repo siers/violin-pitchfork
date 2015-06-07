@@ -74,15 +74,17 @@ store var = do
         store content = (\f -> f var content) . how =<< isEmptyMVar var
         how e = if e then putMVar else (void .) . swapMVar
 
-analyze var =
-    readMVar var >>=
-    print . visualize . violinpick . map (realPart . abs) . elems . calculate
-    >> analyze var
+analyze =
+    print . visualize . violinpick .
+    map (realPart . abs) . elems . calculate
+
+live = do
+    lastChunk <- newEmptyMVar :: IO (MVar Samps)
+    forkIO . forever $ readMVar lastChunk >>= analyze >> hFlush stdout
+    store lastChunk
+
+sequential = mapM_ analyze . chunksOf buffer =<< getContents
 
 main = do
     hSetBinaryMode stdin True
-
-    lastChunk <- newEmptyMVar :: IO (MVar Samps)
-
-    forkIO $ analyze lastChunk
-    store lastChunk
+    live
