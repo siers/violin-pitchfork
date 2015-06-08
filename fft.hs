@@ -12,9 +12,9 @@ import GHC.IO.Handle.FD
 import Crunch
 import Pick
 
-import Debug.Trace
-t :: Show a => a -> a
-t = trace =<< show
+-- import Debug.Trace
+-- t :: Show a => a -> a
+-- t = trace =<< show
 
 buffer = 8000 :: Int -- 4kHz
 
@@ -28,7 +28,7 @@ store var = do
 
 crunch  = violinpick . map (realPart . abs) . elems . calculate
 analyze = print . visualize . crunch
-listen  = putStr . t . maybe "" ((map (: "\n") "1234") !!) . outlier . crunch
+listen  = putStr . maybe "" ((map (: "\n") "1234") !!) . outlier . crunch
 
 live action = do
     lastChunk <- newEmptyMVar :: IO (MVar Samps)
