@@ -1,0 +1,24 @@
+- pitch
+    An interactive pitchfork for violins. It analyzes samples of 8kHz
+    with fftw that are recorded with SoX. Reacts on keys in G3, D4, A4, E5.
+
+- usage
+    Look at Makefile to compile it, then just `make' to start it.
+
+- notes
+    There are two builtin modes — live and sequential(as seen in fft.hs).
+
+    Live mode has two threads and one synchronized mutable variable(MVar).
+    First thread reads into mutable variable, while the other one takes the
+    last 8k samples and analyzes them.
+
+    The point of that is to make sure that we don't lag behind if too many
+    samples have reached us — they'll be skipped.
+
+    Sequential mode has one thread that sequentially analyzes all samples,
+    so you'd want to use that to make it analyze something already recorded,
+    e.g. `./fft < ./records/sin-440.8k.raw'
+
+- links
+    http://sox.sourceforge.net/
+    https://hackage.haskell.org/package/fft
