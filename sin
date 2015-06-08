@@ -1,0 +1,22 @@
+#!/bin/zsh
+
+sin() {
+    play -n synth -1 sine "$@" > /dev/null 2>&1 &
+    play=$!
+}
+
+calc() {
+    ruby -e "a = 35 + ($1 - 1) * 7; puts(2**((a-49)/12.0) * 440)"
+}
+
+sin 440
+while read in; do
+    if egrep "^1|2|3|4$" <<< "$in" > /dev/null; then
+        f=$(calc "$in")
+    else
+        continue
+    fi
+
+    kill -INT $play
+    sin $f
+done
